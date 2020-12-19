@@ -25,5 +25,4 @@ class EwsSender(private val exchange: ExchangeService) : Sender {
         val duration = Duration.ofMillis(measureTimeMillis { message.send() })
         logger.info { "sent: ${duration.toString().substring(2)}" }
     }
-
 }

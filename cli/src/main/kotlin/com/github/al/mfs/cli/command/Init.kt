@@ -34,5 +34,4 @@ class Init : CliktCommand() {
     override fun run() {
         println("initializing $files")
     }
-
 }

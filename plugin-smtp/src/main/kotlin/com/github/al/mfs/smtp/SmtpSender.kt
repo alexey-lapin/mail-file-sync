@@ -34,6 +34,4 @@ class SmtpSender(private val session: Session, override var recipients: List<Str
 
         Transport.send(message)
     }
-
 }
-

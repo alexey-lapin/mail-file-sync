@@ -16,5 +16,4 @@ internal class DefaultInputStreamPipelineTest {
         val b = pipeline.process(InputStreamInput("", ByteArrayInputStream(byteArrayOf(1, 2, 3, 4))))
         println(b.toByteArray().contentToString())
     }
-
 }

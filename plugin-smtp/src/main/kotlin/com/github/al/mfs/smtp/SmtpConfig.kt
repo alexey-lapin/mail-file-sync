@@ -9,7 +9,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires
-import java.util.*
+import java.util.Properties
 import javax.inject.Singleton
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
@@ -65,5 +65,4 @@ class SmtpConfig {
     ): Sender {
         return SmtpSender(session, recipients)
     }
-
 }

@@ -69,7 +69,6 @@ class FileChunkCollector(
             sourceParts.clear()
         }
     }
-
 }
 
 class ByteArrayChunkCollector(private val splitter: Splitter) : Collector<List<Chunk>> {
@@ -95,7 +94,6 @@ class ByteArrayChunkCollector(private val splitter: Splitter) : Collector<List<C
     override fun close() {
         sourceParts.clear()
     }
-
 }
 
 class PassthroughInputCollector : Collector<InputStream> {
@@ -104,7 +102,7 @@ class PassthroughInputCollector : Collector<InputStream> {
     }
 
     override fun collect(input: Input, output: OutputStream): InputStream {
-        return input.inputStream;
+        return input.inputStream
     }
 
     override fun close() {}

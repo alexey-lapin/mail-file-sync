@@ -6,7 +6,6 @@ import com.github.al.mfs.receiver.callback.Merger
 interface ReceiverOrchestrator {
 
     fun receive(transmissionId: String)
-
 }
 
 class SequentialReceiverOrchestrator(
@@ -19,6 +18,4 @@ class SequentialReceiverOrchestrator(
         val metadata = receiver.receive(SimpleReceiverContext(transmissionId, 1, initializer))
         receiver.receive((SimpleReceiverContext(transmissionId, metadata.marker.total, merger)))
     }
-
 }
-

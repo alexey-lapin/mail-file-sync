@@ -27,14 +27,14 @@ internal class DefaultOutputStreamPipelineTest {
 
     @Test
     internal fun name2() {
-        val splitter = FixedCountSplitter(20 * 1024 * 1024) //20MB
+        val splitter = FixedCountSplitter(20 * 1024 * 1024) // 20MB
         val collector = FileChunkCollector(splitter)
         val pipeline = DefaultOutputStreamPipeline(collector)
         pipeline.addMapper(OutputCompressor())
         pipeline.addMapper(OutputEncryptor(DefaultCrypto("qwerasdfzxcv".toCharArray())))
         val input =
             FileInput(File(""))
-        var chunks : List<Chunk>? = null
+        var chunks: List<Chunk>? = null
         val duration = Duration.ofMillis(measureTimeMillis { chunks = pipeline.process(input) })
         println(duration)
         println(chunks?.size)
@@ -43,13 +43,13 @@ internal class DefaultOutputStreamPipelineTest {
 
     @Test
     internal fun name3() {
-        val splitter = FixedCountSplitter(5) //20MB
+        val splitter = FixedCountSplitter(5) // 20MB
         val collector = FileChunkCollector(splitter)
         val pipeline = DefaultOutputStreamPipeline(collector)
         pipeline.addMapper(OutputCompressor())
 //        pipeline.mapper(Encryptor(DefaultCrypto("qwerasdfzxcv".toCharArray())))
-        val input = InputStreamInput("qwer", ByteArrayInputStream(byteArrayOf(1,2,3,4,5,6)))
-        var chunks : List<Chunk>? = null
+        val input = InputStreamInput("qwer", ByteArrayInputStream(byteArrayOf(1, 2, 3, 4, 5, 6)))
+        var chunks: List<Chunk>? = null
         val duration = Duration.ofMillis(measureTimeMillis { chunks = pipeline.process(input) })
         println(duration)
         println(chunks?.size)

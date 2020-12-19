@@ -41,14 +41,12 @@ internal class SplittingOutputStreamTest {
 
         ByteArrayInputStream(bytes).copyTo(output)
 
-
         for (downstreamOutput in outputs) {
             if (downstreamOutput is ByteArrayOutputStream) {
                 val toByteArray = downstreamOutput.toByteArray()
                 println(toByteArray.contentToString())
             }
         }
-
     }
 
     @Test
@@ -64,15 +62,11 @@ internal class SplittingOutputStreamTest {
 
         ByteArrayInputStream(bytes).copyTo(output)
 
-
         for (downstreamOutput in outputs) {
             if (downstreamOutput is ByteArrayOutputStream) {
                 val toByteArray = downstreamOutput.toByteArray()
                 println(toByteArray.contentToString())
             }
         }
-
     }
-
 }
-

@@ -8,6 +8,5 @@ object ReceiverFeature {
 
 interface Receiver {
 
-    fun <R> receive(context: ReceiverContext<R>) : R
-
+    fun <R> receive(context: ReceiverContext<R>): R
 }

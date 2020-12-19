@@ -32,7 +32,7 @@ data class FilePartMarker(val files: PartMarker, val parts: PartMarker) {
 
 data class ChunkMetadata(val sourceFileName: String, val marker: PartMarker) {
     override fun toString(): String {
-        return "${sourceFileName}:${marker}"
+        return "$sourceFileName:$marker"
     }
 
     companion object Factory {
@@ -45,7 +45,7 @@ data class ChunkMetadata(val sourceFileName: String, val marker: PartMarker) {
 
 data class TransmissionMetadata(val id: String, val chunkMetadata: ChunkMetadata) {
     override fun toString(): String {
-        return "${id}.${chunkMetadata}"
+        return "$id.$chunkMetadata"
     }
 
 //    companion object Factory {

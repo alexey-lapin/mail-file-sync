@@ -58,14 +58,15 @@ class ContextTest {
 
     @Test
     internal fun name6() {
-        ApplicationContext.run(mapOf(
-            "ews.url" to "a",
-            "ews.user" to "a",
-            "ews.pass" to "a"
-        )).let { ctx ->
+        ApplicationContext.run(
+            mapOf(
+                "ews.url" to "a",
+                "ews.user" to "a",
+                "ews.pass" to "a"
+            )
+        ).let { ctx ->
             val collector = ctx.getBean(SequentialSenderOrchestrator::class.java)
             println(collector)
         }
     }
-
 }

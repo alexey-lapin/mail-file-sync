@@ -12,19 +12,18 @@ import javax.inject.Singleton
 
 interface Crypto {
 
-    fun encryptionCipher() : Cipher
+    fun encryptionCipher(): Cipher
 
-    fun decryptionCipher() : Cipher
+    fun decryptionCipher(): Cipher
 
     fun encryptString(input: ByteArray): ByteArray
 
     fun decryptString(input: ByteArray): ByteArray
-
 }
 
 @Requires(property = "crypto.passphrase")
 @Singleton
-class DefaultCrypto(@Property(name = "crypto.passphrase") private val passphrase: CharArray): Crypto {
+class DefaultCrypto(@Property(name = "crypto.passphrase") private val passphrase: CharArray) : Crypto {
 
     override fun encryptionCipher(): Cipher {
         return cipher(Cipher.ENCRYPT_MODE)
@@ -53,13 +52,7 @@ class DefaultCrypto(@Property(name = "crypto.passphrase") private val passphrase
 
     private fun cryptString(input: ByteArray, mode: Int): ByteArray {
         val cipher = cipher(mode)
-//        val out = ByteArrayOutputStream()
-//        val out1 = cipher.update(input)
-//        out.write(out1)
-        val out2 = cipher.doFinal(input)
-//        out.write(out2)
-//        return out.toByteArray()
-        return out2
+        return cipher.doFinal(input)
     }
 
     override fun encryptString(input: ByteArray): ByteArray {
@@ -69,5 +62,4 @@ class DefaultCrypto(@Property(name = "crypto.passphrase") private val passphrase
     override fun decryptString(input: ByteArray): ByteArray {
         return cryptString(input, Cipher.DECRYPT_MODE)
     }
-
 }

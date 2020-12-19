@@ -55,6 +55,4 @@ class EwsConfig {
     fun ewsReceiver(exchange: ExchangeService): EwsReceiver {
         return EwsReceiver(exchange)
     }
-
 }
-

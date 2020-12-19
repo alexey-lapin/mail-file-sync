@@ -1,6 +1,5 @@
 package com.github.al.mfs.receiver
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class DefaultReceiverOrchestratorTest {
@@ -10,5 +9,4 @@ internal class DefaultReceiverOrchestratorTest {
 //        EwsRece
 //        DefaultReceiverOrchestrator()
     }
-
 }

@@ -15,7 +15,6 @@ interface Splitter {
     fun update(b: ByteArray, off: Int, len: Int)
 
     fun reset()
-
 }
 
 class NoopSplitter : Splitter {

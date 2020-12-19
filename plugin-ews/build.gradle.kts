@@ -1,7 +1,6 @@
 plugins {
     kotlin("jvm")
     kotlin("kapt")
-//    id("io.micronaut.library")
 }
 
 dependencies {

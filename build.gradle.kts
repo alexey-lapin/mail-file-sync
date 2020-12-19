@@ -36,9 +36,9 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin= "com.diffplug.spotless")
+    apply(plugin = "com.diffplug.spotless")
 
-     spotless {
+    spotless {
         kotlin {
             target("**/*.kt")
             ktlint(Versions.ktlint)

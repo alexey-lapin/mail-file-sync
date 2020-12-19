@@ -1,6 +1,5 @@
 package com.github.al.mfs.io
 
-import com.github.al.mfs.io.FixedCountSplitter
 import org.junit.jupiter.api.Test
 
 internal class FixedCountSplitterTest {
@@ -10,5 +9,4 @@ internal class FixedCountSplitterTest {
         val fixedCountSplitter = FixedCountSplitter(10)
 //        fixedCountSplitter.
     }
-
 }

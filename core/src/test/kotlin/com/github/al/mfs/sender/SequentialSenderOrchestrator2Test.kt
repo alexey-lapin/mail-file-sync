@@ -38,11 +38,10 @@ internal class SequentialSenderOrchestrator2Test {
         senderOrchestrator.send(File(""))
         collector.sourceParts
     }
-
 }
 
 class MockSenderContextFactory : SenderContextFactory {
     override fun create(chunk: Chunk): SenderContext {
-        return SimpleSenderContext(chunk.metadata,"", "", ByteArrayInputStream(byteArrayOf()))
+        return SimpleSenderContext(chunk.metadata, "", "", ByteArrayInputStream(byteArrayOf()))
     }
 }

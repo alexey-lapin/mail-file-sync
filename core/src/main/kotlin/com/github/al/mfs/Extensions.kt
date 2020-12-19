@@ -1,6 +1,6 @@
 package com.github.al.mfs
 
-import java.util.*
+import java.util.Base64
 
 fun getRandomString(length: Int): String {
     val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
@@ -9,15 +9,14 @@ fun getRandomString(length: Int): String {
         .joinToString("")
 }
 
-fun ByteArray.toBase64() : String {
+fun ByteArray.toBase64(): String {
     return Base64.getEncoder().encodeToString(this)
 }
 
-fun String.toBase64() : ByteArray {
+fun String.toBase64(): ByteArray {
     return Base64.getEncoder().encode(this.toByteArray())
 }
 
-fun String.fromBase64() : ByteArray {
+fun String.fromBase64(): ByteArray {
     return Base64.getDecoder().decode(this)
 }
-

@@ -2,12 +2,8 @@ package com.github.al.mfs.sender
 
 import com.github.al.mfs.ChunkMetadata
 import com.github.al.mfs.Crypto
-import com.github.al.mfs.sender.SenderFeature.METADATA_ENCRYPT
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_NAME_OBFUSCATE
 import com.github.al.mfs.toBase64
-import io.micronaut.context.annotation.Requires
-import java.util.*
-import javax.inject.Singleton
+import java.util.UUID
 
 interface SenderChunkMetadataCustomizer : (ChunkMetadata) -> String
 
@@ -29,6 +25,6 @@ class ChunkSenderPayloadNameCustomizer : SenderPayloadNameCustomizer {
     }
 }
 
-class ObfuscateSenderPayloadNameCustomizer: SenderPayloadNameCustomizer {
+class ObfuscateSenderPayloadNameCustomizer : SenderPayloadNameCustomizer {
     override fun invoke(metadata: ChunkMetadata) = UUID.randomUUID().toString()
 }

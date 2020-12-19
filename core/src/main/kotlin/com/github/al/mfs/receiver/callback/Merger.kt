@@ -2,8 +2,8 @@ package com.github.al.mfs.receiver.callback
 
 import com.github.al.mfs.ChunkMetadata
 import com.github.al.mfs.FileChunk
-import com.github.al.mfs.pipeline.InputStreamInput
 import com.github.al.mfs.pipeline.InputPipeline
+import com.github.al.mfs.pipeline.InputStreamInput
 import com.github.al.mfs.receiver.Receivable
 import com.github.al.mfs.receiver.ReceiverChunkMetadataCustomizer
 import mu.KotlinLogging
@@ -12,7 +12,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.SequenceInputStream
 import java.nio.file.Files
-import java.util.*
+import java.util.Collections
 
 private val logger = KotlinLogging.logger {}
 

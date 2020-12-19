@@ -3,6 +3,7 @@ pluginManagement {
         kotlin("jvm") version "1.4.20"
         kotlin("kapt") version "1.4.20"
         id("io.micronaut.library") version "1.2.0"
+        id("com.diffplug.spotless") version "5.8.2"
         id("com.github.johnrengelman.shadow") version "6.1.0"
     }
 }

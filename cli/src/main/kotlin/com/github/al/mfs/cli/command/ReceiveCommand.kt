@@ -30,5 +30,4 @@ class ReceiveCommand() : CliktCommand() {
             orchestrator.receive(transmissionId)
         }
     }
-
 }

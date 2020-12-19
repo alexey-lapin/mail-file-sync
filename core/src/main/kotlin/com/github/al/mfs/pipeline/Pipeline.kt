@@ -8,12 +8,11 @@ import javax.inject.Named
 
 private val logger = KotlinLogging.logger {}
 
-interface Pipeline<R, T>: Closeable {
+interface Pipeline<R, T> : Closeable {
 
     fun addMapper(mapper: (T) -> T): Pipeline<R, T>
 
     fun process(input: Input): R
-
 }
 
 interface InputPipeline<R> : Pipeline<R, InputStream>
@@ -62,7 +61,6 @@ class DefaultInputStreamPipeline<R>(
     override fun close() {
         collector.close()
     }
-
 }
 
 class DefaultOutputStreamPipeline<R>(
@@ -102,5 +100,4 @@ class DefaultOutputStreamPipeline<R>(
     override fun close() {
         collector.close()
     }
-
 }

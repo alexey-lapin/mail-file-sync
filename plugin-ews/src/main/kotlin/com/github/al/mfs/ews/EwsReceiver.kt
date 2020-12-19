@@ -71,5 +71,4 @@ class EwsReceiver(
             Thread.sleep(10 * 1000)
         }
     }
-
 }

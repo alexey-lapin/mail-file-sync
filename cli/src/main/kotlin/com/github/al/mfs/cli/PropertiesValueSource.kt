@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.parameters.options.Option
 import com.github.ajalt.clikt.sources.ValueSource
 import java.io.FileInputStream
 import java.io.IOException
-import java.util.*
+import java.util.Properties
 
 class PropertiesValueSource(
     filePath: String,
@@ -24,6 +24,4 @@ class PropertiesValueSource(
         return values[option.valueSourceKey ?: getKey(context, option)]
             ?.let { ValueSource.Invocation.just(it) }.orEmpty()
     }
-
-
 }

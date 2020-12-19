@@ -12,7 +12,6 @@ private val logger = KotlinLogging.logger {}
 interface SenderOrchestrator {
 
     fun send(file: File)
-
 }
 
 class SequentialSenderOrchestrator(

@@ -14,10 +14,9 @@ import com.github.al.mfs.pipeline.OutputCompressor
 import com.github.al.mfs.pipeline.OutputEncryptor
 import com.github.al.mfs.pipeline.OutputPipeline
 import com.github.al.mfs.pipeline.OutputPipelineMapper
+import com.github.al.mfs.sender.ChunkSenderPayloadNameCustomizer
 import com.github.al.mfs.sender.DefaultSenderContextFactory
 import com.github.al.mfs.sender.EncryptSenderChunkMetadataCustomizer
-import com.github.al.mfs.sender.StringSenderChunkMetadataCustomizer
-import com.github.al.mfs.sender.ChunkSenderPayloadNameCustomizer
 import com.github.al.mfs.sender.ObfuscateSenderPayloadNameCustomizer
 import com.github.al.mfs.sender.Sender
 import com.github.al.mfs.sender.SenderChunkMetadataCustomizer
@@ -31,6 +30,7 @@ import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER
 import com.github.al.mfs.sender.SenderOrchestrator
 import com.github.al.mfs.sender.SenderPayloadNameCustomizer
 import com.github.al.mfs.sender.SequentialSenderOrchestrator
+import com.github.al.mfs.sender.StringSenderChunkMetadataCustomizer
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Prototype
@@ -88,7 +88,6 @@ class SenderConfig {
     ): SenderOrchestrator {
         return SequentialSenderOrchestrator(sender, pipeline, factory)
     }
-
 }
 
 @Factory

@@ -11,7 +11,6 @@ interface Collector<R> : Closeable {
     fun getSink(input: Input): OutputStream
 
     fun collect(input: Input, output: OutputStream): R
-
 }
 
 interface Input {
@@ -19,7 +18,6 @@ interface Input {
     val name: String
 
     val inputStream: InputStream
-
 }
 
 class FileInput(private val file: File) : Input {
@@ -36,5 +34,4 @@ interface Chunk {
     val metadata: ChunkMetadata
 
     val inputStream: InputStream
-
 }

@@ -16,5 +16,4 @@ interface Sender {
     var recipients: List<String>
 
     fun send(context: SenderContext)
-
 }

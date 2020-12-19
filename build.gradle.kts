@@ -2,9 +2,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") apply false
+    id("com.diffplug.spotless")
 }
 
-group = "org.example"
+group = "com.github.al.mfs"
 version = "1.0-SNAPSHOT"
 
 allprojects {
@@ -27,13 +28,22 @@ allprojects {
                 jvmTarget = "1.8"
             }
         }
-//        compileTestKotlin {
-//            kotlinOptions {
-//                jvmTarget = "1.8"
-//            }
-//        }
+
         withType<Test> {
             useJUnitPlatform()
+        }
+    }
+}
+
+subprojects {
+    apply(plugin= "com.diffplug.spotless")
+
+     spotless {
+        kotlin {
+            target("**/*.kt")
+            ktlint(Versions.ktlint)
+            trimTrailingWhitespace()
+            endWithNewline()
         }
     }
 }

@@ -8,5 +8,4 @@ class ImapReceiver : Receiver {
     override fun <R> receive(context: ReceiverContext<R>): R {
         TODO()
     }
-
 }

@@ -7,7 +7,7 @@ import microsoft.exchange.webservices.data.property.complex.FileAttachment
 import microsoft.exchange.webservices.data.property.complex.ItemAttachment
 import java.io.OutputStream
 
-class EwsReceivable (private val message: EmailMessage) : Receivable {
+class EwsReceivable(private val message: EmailMessage) : Receivable {
 
     override fun getSubject(): String = message.subject
 
@@ -26,5 +26,4 @@ class EwsReceivable (private val message: EmailMessage) : Receivable {
             else -> null
         }
     }
-
 }

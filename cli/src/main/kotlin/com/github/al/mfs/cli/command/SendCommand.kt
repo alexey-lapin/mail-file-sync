@@ -1,8 +1,5 @@
 package com.github.al.mfs.cli.command
 
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_COMPRESS
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_NAME_OBFUSCATE
-import com.github.al.mfs.sender.SenderOrchestrator
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -13,8 +10,11 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
+import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_COMPRESS
 import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_SPLIT_FIXED
+import com.github.al.mfs.sender.SenderFeature.PAYLOAD_NAME_OBFUSCATE
 import com.github.al.mfs.sender.SenderFeature.RECIPIENTS
+import com.github.al.mfs.sender.SenderOrchestrator
 import io.micronaut.context.ApplicationContext
 
 class SendCommand : CliktCommand() {
@@ -40,5 +40,4 @@ class SendCommand : CliktCommand() {
             orchestrator.send(files[0])
         }
     }
-
 }

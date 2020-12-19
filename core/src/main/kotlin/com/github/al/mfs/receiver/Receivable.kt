@@ -7,5 +7,4 @@ interface Receivable {
     fun getSubject(): String
 
     fun loadAttachment(output: OutputStream)
-
 }

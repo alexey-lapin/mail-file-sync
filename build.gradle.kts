@@ -3,10 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") apply false
     id("com.diffplug.spotless")
+    id("com.github.ben-manes.versions")
 }
 
 group = "com.github.al.mfs"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 allprojects {
     repositories {
@@ -41,9 +42,27 @@ subprojects {
     spotless {
         kotlin {
             target("**/*.kt")
-            ktlint(Versions.ktlint)
+            ktlint(versions.ktlint)
             trimTrailingWhitespace()
             endWithNewline()
+        }
+    }
+}
+
+tasks {
+    dependencyUpdates {
+        checkConstraints = true
+        resolutionStrategy {
+            componentSelection {
+                all {
+                    val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea")
+                        .map { qualifier -> Regex("(?i).*[.-]$qualifier[.\\d-+]*") }
+                        .any { it.matches(candidate.version) }
+                    if (rejected) {
+                        reject("Release candidate")
+                    }
+                }
+            }
         }
     }
 }

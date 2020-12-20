@@ -12,15 +12,15 @@ application {
 }
 
 dependencies {
-    kapt("io.micronaut:micronaut-inject-java:${Versions.mn}")
+    kapt("io.micronaut:micronaut-inject-java:${versions.mn}")
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", versions.kt))
     implementation(project(":core"))
     implementation(project(":plugin-ews"))
     implementation(project(":plugin-imap"))
     implementation(project(":plugin-smtp"))
-    implementation("com.github.ajalt.clikt:clikt:3.0.1")
-    implementation("io.micronaut:micronaut-inject:${Versions.mn}")
+    implementation("com.github.ajalt.clikt:clikt:3.1.0")
+    implementation("io.micronaut:micronaut-inject:${versions.mn}")
 
     runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
 }

@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", versions.kt))
     implementation(project(":core"))
-    implementation("jakarta.mail:jakarta.mail-api:${Versions.jakartaMail}")
-    implementation("com.sun.mail:jakarta.mail:${Versions.jakartaMail}")
+    implementation("jakarta.mail:jakarta.mail-api:${versions.jakartaMail}")
+    implementation("com.sun.mail:jakarta.mail:${versions.jakartaMail}")
 }

@@ -4,11 +4,11 @@ plugins {
 }
 
 dependencies {
-    kapt("io.micronaut:micronaut-inject-java:${Versions.mn}")
+    kapt("io.micronaut:micronaut-inject-java:${versions.mn}")
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", versions.kt))
     implementation(project(":core"))
-    implementation("io.micronaut:micronaut-inject:${Versions.mn}")
-    implementation("com.sun.mail:jakarta.mail:${Versions.jakartaMail}")
-    implementation("jakarta.mail:jakarta.mail-api:${Versions.jakartaMail}")
+    implementation("io.micronaut:micronaut-inject:${versions.mn}")
+    implementation("com.sun.mail:jakarta.mail:${versions.jakartaMail}")
+    implementation("jakarta.mail:jakarta.mail-api:${versions.jakartaMail}")
 }

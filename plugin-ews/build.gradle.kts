@@ -4,11 +4,10 @@ plugins {
 }
 
 dependencies {
-    kapt("io.micronaut:micronaut-inject-java:${Versions.mn}")
+    kapt("io.micronaut:micronaut-inject-java:${versions.mn}")
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", versions.kt))
     implementation(project(":core"))
-    implementation("io.micronaut:micronaut-inject:${Versions.mn}")
+    implementation("io.micronaut:micronaut-inject:${versions.mn}")
     implementation("com.microsoft.ews-java-api:ews-java-api:2.0")
 }
-

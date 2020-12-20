@@ -1,0 +1,11 @@
+- [ ] spotless license
+- [ ] testing
+- [ ] coverage
+- [ ] docs
+- [ ] readme
+- [ ] ci
+- [ ] publish to github packages (jar + docker)
+- [ ] publish to github releases 
+- [ ] jlink image
+- [ ] docker
+- [ ] graal

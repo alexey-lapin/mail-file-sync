@@ -5,14 +5,14 @@ plugins {
 }
 
 dependencies {
-    kapt("io.micronaut:micronaut-inject-java:${Versions.mn}")
-    implementation(kotlin("stdlib"))
-    implementation("io.micronaut:micronaut-inject:${Versions.mn}")
-    api("io.github.microutils:kotlin-logging-jvm:2.0.2")
+    kapt("io.micronaut:micronaut-inject-java:${versions.mn}")
+    implementation(kotlin("stdlib", versions.kt))
+    implementation("io.micronaut:micronaut-inject:${versions.mn}")
+    api("io.github.microutils:kotlin-logging-jvm:2.0.4")
 
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.6.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
+    testImplementation(kotlin("test-junit5", versions.kt))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${versions.junit}")
 
     testRuntimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions.junit}")
 }

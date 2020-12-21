@@ -3,7 +3,6 @@ package com.github.al.mfs.cli.command
 import com.github.ajalt.clikt.core.Abort
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.groups.OptionGroup
-import com.github.ajalt.clikt.parameters.groups.required
 import com.github.ajalt.clikt.parameters.options.NullableOption
 import com.github.ajalt.clikt.parameters.options.OptionCallTransformContext
 import com.github.ajalt.clikt.parameters.options.OptionDelegate
@@ -13,27 +12,26 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.transformAll
+import com.github.al.mfs.CryptoProperties.PASSPHRASE
 import com.github.al.mfs.ews.EwsProperties.EWS_PASS
 import com.github.al.mfs.ews.EwsProperties.EWS_URL
 import com.github.al.mfs.ews.EwsProperties.EWS_USER
-import com.github.al.mfs.receiver.ReceiverFeature.METADATA_DECRYPT
-import com.github.al.mfs.receiver.ReceiverFeature.PAYLOAD_CONTENT_DECRYPT
-import com.github.al.mfs.sender.SenderFeature
+import com.github.al.mfs.receiver.ReceiverFeatures.METADATA_DECRYPT
+import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECRYPT
+import com.github.al.mfs.sender.SenderFeatures.METADATA_ENCRYPT
+import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_ENCRYPT
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_HOST
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_PASS
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_PORT
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_USER
 
 open class CryptOptions : OptionGroup() {
-    val passphrase by option("--passphrase", valueSourceKey = "crypto.passphrase").requiredPrompt(hideInput = true)
+    val passphrase by option("--passphrase", valueSourceKey = PASSPHRASE).requiredPrompt(hideInput = true)
 }
 
 class EncryptOptions : CryptOptions() {
-    val metadataEncrypt by option("--metadata-encrypt", valueSourceKey = SenderFeature.METADATA_ENCRYPT).flag()
-    val payloadContentEncrypt by option(
-        "--content-encrypt",
-        valueSourceKey = SenderFeature.PAYLOAD_CONTENT_ENCRYPT
-    ).flag()
+    val metadataEncrypt by option("--metadata-encrypt", valueSourceKey = METADATA_ENCRYPT).flag()
+    val payloadContentEncrypt by option("--content-encrypt", valueSourceKey = PAYLOAD_CONTENT_ENCRYPT).flag()
 }
 
 class DecryptOptions : CryptOptions() {
@@ -82,6 +80,7 @@ fun <T : Any> NullableOption<T, T>.requiredPrompt(
 fun CliktCommand.context(): Map<String, Any?> {
     return registeredOptions()
         .filterIsInstance<OptionDelegate<*>>()
-        .filter { it.valueSourceKey != null && (it.value !is Boolean || it.value is Boolean && it.value == true) }
+        .filter { it.valueSourceKey != null }
+        .filter { it.value != null }
         .associate { it.valueSourceKey!! to it.value }
 }

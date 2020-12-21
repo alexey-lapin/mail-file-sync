@@ -1,5 +1,6 @@
 package com.github.al.mfs
 
+import com.github.al.mfs.CryptoProperties.PASSPHRASE
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import java.security.spec.KeySpec
@@ -9,6 +10,10 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Singleton
+
+object CryptoProperties {
+    const val PASSPHRASE = "crypto.passphrase"
+}
 
 interface Crypto {
 
@@ -21,9 +26,9 @@ interface Crypto {
     fun decryptString(input: ByteArray): ByteArray
 }
 
-@Requires(property = "crypto.passphrase")
+@Requires(property = PASSPHRASE)
 @Singleton
-class DefaultCrypto(@Property(name = "crypto.passphrase") private val passphrase: CharArray) : Crypto {
+class DefaultCrypto(@Property(name = PASSPHRASE) private val passphrase: CharArray) : Crypto {
 
     override fun encryptionCipher(): Cipher {
         return cipher(Cipher.ENCRYPT_MODE)

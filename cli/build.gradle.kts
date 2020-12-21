@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -30,4 +31,8 @@ tasks.withType<KotlinCompile>().configureEach {
         jvmTarget = "1.8"
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
+}
+
+tasks.withType<ShadowJar> {
+    mergeServiceFiles()
 }

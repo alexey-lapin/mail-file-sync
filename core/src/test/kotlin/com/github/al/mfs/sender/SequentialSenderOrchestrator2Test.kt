@@ -18,7 +18,8 @@ internal class SequentialSenderOrchestrator2Test {
         val senderOrchestrator2 = SequentialSenderOrchestrator(
             FakeSender(),
             DefaultOutputStreamPipeline(ByteArrayChunkCollector(NoopSplitter())),
-            MockSenderContextFactory()
+            MockSenderContextFactory(),
+            listOf()
         )
         senderOrchestrator2.send(File("build.gradle.kts"))
     }
@@ -31,9 +32,10 @@ internal class SequentialSenderOrchestrator2Test {
             DefaultOutputStreamPipeline(collector),
             DefaultSenderContextFactory(
                 "zzz",
-                StringSenderChunkMetadataCustomizer(),
-                ChunkSenderPayloadNameCustomizer()
-            )
+                PlainStringSenderChunkMetadataCustomizer(),
+                OriginalSenderPayloadNameCustomizer()
+            ),
+            listOf()
         )
         senderOrchestrator.send(File(""))
         collector.sourceParts

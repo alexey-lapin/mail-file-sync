@@ -8,17 +8,20 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.al.mfs.cli.MailFileSync
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_COMPRESS
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_SPLIT_FIXED
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_NAME_OBFUSCATE
-import com.github.al.mfs.sender.SenderFeature.RECIPIENTS
+import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_COMPRESS
+import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_NAME_OBFUSCATE
+import com.github.al.mfs.sender.SenderOrchestrator
+import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_FIXED
+import com.github.al.mfs.sender.SenderProperties.RECIPIENTS
+import com.github.al.mfs.sender.SenderProperties.TRANSPORT
+import io.micronaut.context.ApplicationContext
 import java.io.File
 
 class Init : CliktCommand() {
 
     private val recipients by option("--recipient", valueSourceKey = RECIPIENTS).required()
 
-    private val transportOptions by option("--transport").groupChoice(
+    private val transportOptions by option("--transport", valueSourceKey = TRANSPORT).groupChoice(
         "ews" to EwsOptions(),
         "smtp" to SmtpOptions()
     ).required()
@@ -32,6 +35,9 @@ class Init : CliktCommand() {
     private val files = listOf(File(MailFileSync::class.java.protectionDomain.codeSource.location.toURI().path))
 
     override fun run() {
-        println("initializing $files")
+        ApplicationContext.run(context()).use { ctx ->
+            val orchestrator = ctx.getBean(SenderOrchestrator::class.java)
+            orchestrator.send(files[0])
+        }
     }
 }

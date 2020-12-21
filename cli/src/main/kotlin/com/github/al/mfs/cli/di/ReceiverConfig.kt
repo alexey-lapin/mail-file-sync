@@ -1,6 +1,8 @@
 package com.github.al.mfs.cli.di
 
 import com.github.al.mfs.Crypto
+import com.github.al.mfs.ReceiverFeature
+import com.github.al.mfs.TRUE
 import com.github.al.mfs.pipeline.Collector
 import com.github.al.mfs.pipeline.DefaultInputStreamPipeline
 import com.github.al.mfs.pipeline.FileCollector
@@ -9,11 +11,12 @@ import com.github.al.mfs.pipeline.InputDecryptor
 import com.github.al.mfs.pipeline.InputPipeline
 import com.github.al.mfs.pipeline.InputPipelineMapper
 import com.github.al.mfs.receiver.DecryptReceiverChunkMetadataCustomizer
+import com.github.al.mfs.receiver.PlainStringChunkMetadataCustomizer
 import com.github.al.mfs.receiver.Receiver
 import com.github.al.mfs.receiver.ReceiverChunkMetadataCustomizer
-import com.github.al.mfs.receiver.ReceiverFeature.METADATA_DECRYPT
-import com.github.al.mfs.receiver.ReceiverFeature.PAYLOAD_CONTENT_DECOMPRESS
-import com.github.al.mfs.receiver.ReceiverFeature.PAYLOAD_CONTENT_DECRYPT
+import com.github.al.mfs.receiver.ReceiverFeatures.METADATA_DECRYPT
+import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECOMPRESS
+import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECRYPT
 import com.github.al.mfs.receiver.ReceiverOrchestrator
 import com.github.al.mfs.receiver.SequentialReceiverOrchestrator
 import com.github.al.mfs.receiver.callback.DefaultInitializer
@@ -29,9 +32,15 @@ import javax.inject.Singleton
 
 @Factory
 class ReceiverConfig {
-    @Requires(property = METADATA_DECRYPT)
+    @Requires(missingBeans = [ReceiverChunkMetadataCustomizer::class])
     @Singleton
-    fun receiverChunkMetadataCustomizer(crypto: Crypto): ReceiverChunkMetadataCustomizer {
+    fun defaultReceiverChunkMetadataCustomizer(): ReceiverChunkMetadataCustomizer {
+        return PlainStringChunkMetadataCustomizer()
+    }
+
+    @Requires(property = METADATA_DECRYPT, value = TRUE)
+    @Singleton
+    fun decryptReceiverChunkMetadataCustomizer(crypto: Crypto): ReceiverChunkMetadataCustomizer {
         return DecryptReceiverChunkMetadataCustomizer(crypto)
     }
 
@@ -39,9 +48,11 @@ class ReceiverConfig {
     fun receiverOrchestrator(
         receiver: Receiver,
         initializer: Initializer,
-        merger: Merger
+        merger: Merger,
+        features: List<ReceiverFeature>
     ): ReceiverOrchestrator {
-        return SequentialReceiverOrchestrator(receiver, initializer, merger)
+        val featureNames = features.map { it.name }.sorted()
+        return SequentialReceiverOrchestrator(receiver, initializer, merger, featureNames)
     }
 
     @Singleton
@@ -66,14 +77,14 @@ class InputPipelineConfig {
         return FileCollector()
     }
 
-    @Requires(property = PAYLOAD_CONTENT_DECOMPRESS)
+    @Requires(property = PAYLOAD_CONTENT_DECOMPRESS, value = TRUE)
     @Order(10)
     @Singleton
     fun decompressorInputMapper(): InputPipelineMapper {
         return InputDecompressor()
     }
 
-    @Requires(property = PAYLOAD_CONTENT_DECRYPT)
+    @Requires(property = PAYLOAD_CONTENT_DECRYPT, value = TRUE)
     @Order(20)
     @Singleton
     fun decryptorInputMapper(crypto: Crypto): InputPipelineMapper {

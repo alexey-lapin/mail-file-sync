@@ -1,5 +1,7 @@
 package com.github.al.mfs.pipeline
 
+import com.github.al.mfs.ReceiverFeature
+import com.github.al.mfs.SenderFeature
 import mu.KotlinLogging
 import java.io.Closeable
 import java.io.InputStream
@@ -9,9 +11,7 @@ import javax.inject.Named
 private val logger = KotlinLogging.logger {}
 
 interface Pipeline<R, T> : Closeable {
-
     fun addMapper(mapper: (T) -> T): Pipeline<R, T>
-
     fun process(input: Input): R
 }
 
@@ -19,9 +19,9 @@ interface InputPipeline<R> : Pipeline<R, InputStream>
 
 interface OutputPipeline<R> : Pipeline<R, OutputStream>
 
-interface InputPipelineMapper : (InputStream) -> InputStream
+interface InputPipelineMapper : SenderFeature, ReceiverFeature, (InputStream) -> InputStream
 
-interface OutputPipelineMapper : (OutputStream) -> OutputStream
+interface OutputPipelineMapper : SenderFeature, ReceiverFeature, (OutputStream) -> OutputStream
 
 class DefaultInputStreamPipeline<R>(
     private val collector: Collector<R>,

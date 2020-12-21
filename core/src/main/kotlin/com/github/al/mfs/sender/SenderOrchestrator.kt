@@ -10,7 +10,6 @@ import java.nio.file.Files
 private val logger = KotlinLogging.logger {}
 
 interface SenderOrchestrator {
-
     fun send(file: File)
 }
 
@@ -18,10 +17,13 @@ class SequentialSenderOrchestrator(
     private val sender: Sender,
     private val pipeline: OutputPipeline<List<Chunk>>,
     private val senderContextFactory: SenderContextFactory,
+    private val features: List<String>
 ) : SenderOrchestrator {
     override fun send(file: File) {
         logger.info { "sending ${file.absolutePath} ${Files.size(file.toPath())}" }
+        logger.info { "applied features: $features" }
         pipeline.let { usedPipeline ->
+            logger.info { "pipeline started" }
             val chunks = usedPipeline.process(FileInput(file))
             logger.info { "pipeline finished" }
             chunks.forEach { chunk ->

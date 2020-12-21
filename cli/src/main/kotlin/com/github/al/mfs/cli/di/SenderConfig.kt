@@ -1,6 +1,8 @@
 package com.github.al.mfs.cli.di
 
 import com.github.al.mfs.Crypto
+import com.github.al.mfs.SenderFeature
+import com.github.al.mfs.TRUE
 import com.github.al.mfs.getRandomString
 import com.github.al.mfs.io.BoundedRandomCountSplitter
 import com.github.al.mfs.io.FixedCountSplitter
@@ -14,23 +16,25 @@ import com.github.al.mfs.pipeline.OutputCompressor
 import com.github.al.mfs.pipeline.OutputEncryptor
 import com.github.al.mfs.pipeline.OutputPipeline
 import com.github.al.mfs.pipeline.OutputPipelineMapper
-import com.github.al.mfs.sender.ChunkSenderPayloadNameCustomizer
 import com.github.al.mfs.sender.DefaultSenderContextFactory
 import com.github.al.mfs.sender.EncryptSenderChunkMetadataCustomizer
 import com.github.al.mfs.sender.ObfuscateSenderPayloadNameCustomizer
+import com.github.al.mfs.sender.OriginalSenderPayloadNameCustomizer
+import com.github.al.mfs.sender.PlainStringSenderChunkMetadataCustomizer
 import com.github.al.mfs.sender.Sender
 import com.github.al.mfs.sender.SenderChunkMetadataCustomizer
 import com.github.al.mfs.sender.SenderContextFactory
-import com.github.al.mfs.sender.SenderFeature
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_COMPRESS
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_ENCRYPT
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_SPLIT_FIXED
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER
-import com.github.al.mfs.sender.SenderFeature.PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER
+import com.github.al.mfs.sender.SenderFeatures.METADATA_ENCRYPT
+import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_COMPRESS
+import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_ENCRYPT
+import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_NAME_OBFUSCATE
 import com.github.al.mfs.sender.SenderOrchestrator
 import com.github.al.mfs.sender.SenderPayloadNameCustomizer
+import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_FIXED
+import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER
+import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER
+import com.github.al.mfs.sender.SenderProperties.TRANSMISSION_ID
 import com.github.al.mfs.sender.SequentialSenderOrchestrator
-import com.github.al.mfs.sender.StringSenderChunkMetadataCustomizer
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Prototype
@@ -46,10 +50,10 @@ class SenderConfig {
     @Requires(missingBeans = [SenderChunkMetadataCustomizer::class])
     @Singleton
     fun defaultChunkMetadataCustomizer(): SenderChunkMetadataCustomizer {
-        return StringSenderChunkMetadataCustomizer()
+        return PlainStringSenderChunkMetadataCustomizer()
     }
 
-    @Requires(property = SenderFeature.METADATA_ENCRYPT)
+    @Requires(property = METADATA_ENCRYPT, value = TRUE)
     @Singleton
     fun encryptedChunkMetadataCustomizer(crypto: Crypto): SenderChunkMetadataCustomizer {
         return EncryptSenderChunkMetadataCustomizer(crypto)
@@ -58,10 +62,10 @@ class SenderConfig {
     @Requires(missingBeans = [SenderPayloadNameCustomizer::class])
     @Singleton
     fun defaultSenderPayloadNameCustomizer(): SenderPayloadNameCustomizer {
-        return ChunkSenderPayloadNameCustomizer()
+        return OriginalSenderPayloadNameCustomizer()
     }
 
-    @Requires(property = SenderFeature.PAYLOAD_NAME_OBFUSCATE)
+    @Requires(property = PAYLOAD_NAME_OBFUSCATE, value = TRUE)
     @Singleton
     fun obfuscatePayloadNameCustomizer(): SenderPayloadNameCustomizer {
         return ObfuscateSenderPayloadNameCustomizer()
@@ -69,7 +73,7 @@ class SenderConfig {
 
     @Singleton
     fun senderContextFactory(
-        @Property(name = "transmission.id") transmissionId: String?,
+        @Property(name = TRANSMISSION_ID) transmissionId: String?,
         transmissionMetadataCustomizer: SenderChunkMetadataCustomizer,
         senderPayloadNameCustomizer: SenderPayloadNameCustomizer
     ): SenderContextFactory {
@@ -84,9 +88,11 @@ class SenderConfig {
     fun senderOrchestrator(
         sender: Sender,
         pipeline: OutputPipeline<List<Chunk>>,
-        factory: SenderContextFactory
+        factory: SenderContextFactory,
+        features: List<SenderFeature>
     ): SenderOrchestrator {
-        return SequentialSenderOrchestrator(sender, pipeline, factory)
+        val featureNames = features.map { it.name }.sorted()
+        return SequentialSenderOrchestrator(sender, pipeline, factory, featureNames)
     }
 }
 
@@ -99,14 +105,14 @@ class OutputPipelineConfig {
     }
 
     @Order(10)
-    @Requires(property = PAYLOAD_CONTENT_COMPRESS)
+    @Requires(property = PAYLOAD_CONTENT_COMPRESS, value = TRUE)
     @Singleton
     fun compressorOutputMapper(): OutputPipelineMapper {
         return OutputCompressor()
     }
 
     @Order(20)
-    @Requires(property = PAYLOAD_CONTENT_ENCRYPT)
+    @Requires(property = PAYLOAD_CONTENT_ENCRYPT, value = TRUE)
     @Singleton
     fun encryptorOutputMapper(crypto: Crypto): OutputPipelineMapper {
         return OutputEncryptor(crypto)

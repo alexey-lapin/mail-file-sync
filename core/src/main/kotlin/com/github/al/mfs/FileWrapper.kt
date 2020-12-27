@@ -5,8 +5,6 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 
-class FileChunkOld(val file: File, val metadata: ChunkMetadata)
-
 class FileChunk(val file: File, override val metadata: ChunkMetadata) : Chunk {
     override val inputStream: InputStream
         get() = file.inputStream()

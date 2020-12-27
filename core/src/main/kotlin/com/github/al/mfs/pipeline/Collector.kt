@@ -7,14 +7,12 @@ import java.io.InputStream
 import java.io.OutputStream
 
 interface Collector<R> : Closeable {
-
     fun getSink(input: Input): OutputStream
 
     fun collect(input: Input, output: OutputStream): R
 }
 
 interface Input {
-
     val name: String
 
     val inputStream: InputStream
@@ -30,7 +28,6 @@ class FileInput(private val file: File) : Input {
 class InputStreamInput(override val name: String, override val inputStream: InputStream) : Input
 
 interface Chunk {
-
     val metadata: ChunkMetadata
 
     val inputStream: InputStream

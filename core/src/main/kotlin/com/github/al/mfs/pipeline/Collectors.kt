@@ -5,6 +5,7 @@ import com.github.al.mfs.ChunkMetadata
 import com.github.al.mfs.FileChunk
 import com.github.al.mfs.InputStreamChunk
 import com.github.al.mfs.PartMarker
+import com.github.al.mfs.io.BoundedInputStream
 import com.github.al.mfs.io.DelegateOutputStream
 import com.github.al.mfs.io.NoopOutputStream
 import com.github.al.mfs.io.Splitter
@@ -151,6 +152,28 @@ class FileCollector : Collector<File> {
     override fun collect(input: Input, output: OutputStream): File {
         input.inputStream.copyTo(output)
         return file
+    }
+
+    override fun close() {}
+}
+
+class SplittingInputStreamCollector(private val splitter: Splitter) : Collector<Sequence<Chunk>> {
+    override fun getSink(input: Input): OutputStream {
+        return NoopOutputStream
+    }
+
+    override fun collect(input: Input, output: OutputStream): Sequence<Chunk> {
+        var index = 0
+        return generateSequence {
+            if (input.inputStream.available() > 0) {
+                splitter.reset()
+                return@generateSequence InputStreamChunk(
+                    BoundedInputStream(input.inputStream, splitter.getLimit()),
+                    ChunkMetadata(input.name, PartMarker(++index, -1))
+                )
+            }
+            null
+        }
     }
 
     override fun close() {}

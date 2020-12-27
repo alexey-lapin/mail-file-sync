@@ -64,7 +64,7 @@ class DefaultInputStreamPipeline<R>(
 }
 
 class DefaultOutputStreamPipeline<R>(
-    @Named("splitted") private val collector: Collector<R>,
+    private val collector: Collector<R>,
     mappers: List<(OutputStream) -> OutputStream> = mutableListOf()
 ) : OutputPipeline<R> {
 

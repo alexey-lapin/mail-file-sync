@@ -3,6 +3,7 @@ package com.github.al.mfs.io
 import kotlin.random.Random
 
 interface Splitter {
+    fun getLimit(): Long
 
     fun shouldSplit(b: Int): Boolean
 
@@ -18,6 +19,8 @@ interface Splitter {
 }
 
 class NoopSplitter : Splitter {
+    override fun getLimit() = Long.MAX_VALUE
+
     override fun shouldSplit(b: Int): Boolean = false
 
     override fun update(b: Int) {}
@@ -33,10 +36,12 @@ class NoopSplitter : Splitter {
 
 abstract class AbstractCountSplitter(protected val limitProvider: () -> Long) : Splitter {
     private var count: Long = 0
-    protected var limit = limitProvider.invoke()
+    protected var lim = limitProvider.invoke()
+
+    override fun getLimit() = lim
 
     override fun shouldSplit(b: Int): Boolean {
-        return count + 1 > limit
+        return count + 1 > lim
     }
 
     override fun update(b: Int) {
@@ -44,11 +49,11 @@ abstract class AbstractCountSplitter(protected val limitProvider: () -> Long) : 
     }
 
     override fun shouldSplit(b: ByteArray, off: Int, len: Int): Boolean {
-        return count + len > limit
+        return count + len > lim
     }
 
     override fun split(b: ByteArray, off: Int, len: Int): Int {
-        return (limit - count).toInt()
+        return (lim - count).toInt()
     }
 
     override fun update(b: ByteArray, off: Int, len: Int) {
@@ -59,7 +64,7 @@ abstract class AbstractCountSplitter(protected val limitProvider: () -> Long) : 
         count = 0
     }
 
-    override fun toString() = "${this::class.java.simpleName}[limit:$limit count:$count]"
+    override fun toString() = "${this::class.java.simpleName}[limit:$lim count:$count]"
 }
 
 class FixedCountSplitter(private val fixedLimit: Long) :
@@ -74,6 +79,6 @@ class BoundedRandomCountSplitter(lower: Long, upper: Long) :
 
     override fun reset() {
         super.reset()
-        limit = limitProvider.invoke()
+        lim = limitProvider.invoke()
     }
 }

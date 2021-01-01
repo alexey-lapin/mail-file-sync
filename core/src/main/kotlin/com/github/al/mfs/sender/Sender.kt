@@ -5,6 +5,7 @@ object SenderFeatures {
     const val METADATA_PLAIN = "sender.metadata.plain"
     const val PAYLOAD_CONTENT_COMPRESS = "sender.payload.content.compress"
     const val PAYLOAD_CONTENT_ENCRYPT = "sender.payload.content.encrypt"
+    const val PAYLOAD_CONTENT_ENCRYPT_HEADER = "sender.payload.content.encrypt.header"
     const val PAYLOAD_NAME_OBFUSCATE = "sender.payload.name.obfuscate"
     const val PAYLOAD_NAME_ORIGINAL = "sender.payload.name.original"
 }

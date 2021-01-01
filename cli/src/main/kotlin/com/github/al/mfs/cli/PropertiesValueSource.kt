@@ -21,7 +21,8 @@ class PropertiesValueSource(
     }
 
     override fun getValues(context: Context, option: Option): List<ValueSource.Invocation> {
-        return values[option.valueSourceKey ?: getKey(context, option)]
-            ?.let { ValueSource.Invocation.just(it) }.orEmpty()
+        val key = option.valueSourceKey ?: getKey(context, option)
+        val value = values[key]?.let { ValueSource.Invocation.just(it) }.orEmpty()
+        return value
     }
 }

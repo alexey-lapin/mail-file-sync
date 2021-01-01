@@ -8,6 +8,7 @@ import com.github.al.mfs.pipeline.DefaultInputStreamPipeline
 import com.github.al.mfs.pipeline.FileCollector
 import com.github.al.mfs.pipeline.InputDecompressor
 import com.github.al.mfs.pipeline.InputDecryptor
+import com.github.al.mfs.pipeline.InputDecryptorHeaderReader
 import com.github.al.mfs.pipeline.InputPipeline
 import com.github.al.mfs.pipeline.InputPipelineMapper
 import com.github.al.mfs.receiver.DecryptReceiverChunkMetadataCustomizer
@@ -75,6 +76,13 @@ class InputPipelineConfig {
     @Singleton
     fun collectorFile(): Collector<File> {
         return FileCollector()
+    }
+
+    @Requires(property = PAYLOAD_CONTENT_DECRYPT, value = TRUE)
+    @Order(5)
+    @Singleton
+    fun decryptorHeaderReaderInputMapper(crypto: Crypto): InputPipelineMapper {
+        return InputDecryptorHeaderReader(crypto)
     }
 
     @Requires(property = PAYLOAD_CONTENT_DECOMPRESS, value = TRUE)

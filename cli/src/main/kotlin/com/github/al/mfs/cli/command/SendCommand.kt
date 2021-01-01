@@ -14,6 +14,8 @@ import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_COMPRESS
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_NAME_OBFUSCATE
 import com.github.al.mfs.sender.SenderOrchestrator
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_FIXED
+import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER
+import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER
 import com.github.al.mfs.sender.SenderProperties.RECIPIENTS
 import com.github.al.mfs.sender.SenderProperties.TRANSPORT
 import io.micronaut.context.ApplicationContext
@@ -30,6 +32,8 @@ class SendCommand : CliktCommand() {
     private val encryptOptions by EncryptOptions().cooccurring()
 
     private val contentSplitFixed by option("--content-split", valueSourceKey = PAYLOAD_CONTENT_SPLIT_FIXED)
+    private val contentSplitFrom by option("--content-split-from", valueSourceKey = PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER)
+    private val contentSplitTo by option("--content-split-to", valueSourceKey = PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER)
     private val contentCompress by option("--content-compress", valueSourceKey = PAYLOAD_CONTENT_COMPRESS).flag()
     private val nameObfuscate by option("--name-obfuscate", valueSourceKey = PAYLOAD_NAME_OBFUSCATE).flag()
 

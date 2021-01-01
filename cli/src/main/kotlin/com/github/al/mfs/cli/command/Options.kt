@@ -27,6 +27,7 @@ import com.github.al.mfs.smtp.SmtpProperties.SMTP_USER
 
 open class CryptOptions : OptionGroup() {
     val passphrase by option("--passphrase", valueSourceKey = PASSPHRASE).requiredPrompt(hideInput = true)
+    val encrypted by option("--encrypted").flag()
 }
 
 class EncryptOptions : CryptOptions() {

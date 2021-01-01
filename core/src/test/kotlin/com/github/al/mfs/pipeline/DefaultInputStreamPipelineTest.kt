@@ -12,7 +12,7 @@ internal class DefaultInputStreamPipelineTest {
     @Test
     internal fun name() {
         val pipeline = DefaultInputStreamPipeline(PassthroughOutputCollector(ByteArrayOutputStream()))
-        pipeline.addMapper { i -> DeflaterInputStream(i) }
+        pipeline.addMapper { i, p -> DeflaterInputStream(i) }
         val b = pipeline.process(InputStreamInput("", ByteArrayInputStream(byteArrayOf(1, 2, 3, 4))))
         println(b.toByteArray().contentToString())
     }

@@ -2,14 +2,9 @@ package com.github.al.mfs.io
 
 import java.io.OutputStream
 
-class DelegateOutputStream(
-    private val delegate: OutputStream,
-    initializer: (OutputStream) -> Unit
-) : OutputStream() {
+class LazyDelegateOutputStream : OutputStream() {
 
-    init {
-        initializer.invoke(delegate)
-    }
+    lateinit var delegate: OutputStream
 
     override fun write(b: Int) {
         delegate.write(b)

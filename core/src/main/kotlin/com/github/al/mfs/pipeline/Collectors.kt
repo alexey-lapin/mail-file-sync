@@ -6,7 +6,7 @@ import com.github.al.mfs.FileChunk
 import com.github.al.mfs.InputStreamChunk
 import com.github.al.mfs.PartMarker
 import com.github.al.mfs.io.BoundedInputStream
-import com.github.al.mfs.io.DelegateOutputStream
+import com.github.al.mfs.io.LazyDelegateOutputStream
 import com.github.al.mfs.io.NoopOutputStream
 import com.github.al.mfs.io.Splitter
 import com.github.al.mfs.io.SplittingOutputStream
@@ -124,7 +124,7 @@ class PassthroughOutputCollector<T : OutputStream>(private val sink: T) : Collec
 
 class DelegateFileCollector : Collector<File> {
 
-    val delegate: DelegateOutputStream = DelegateOutputStream()
+    private val delegate: LazyDelegateOutputStream = LazyDelegateOutputStream()
 
     override fun getSink(input: Input): OutputStream {
         return delegate

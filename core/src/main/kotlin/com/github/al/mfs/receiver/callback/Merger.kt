@@ -12,7 +12,9 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.SequenceInputStream
 import java.nio.file.Files
+import java.time.Duration
 import java.util.Collections
+import kotlin.system.measureTimeMillis
 
 private val logger = KotlinLogging.logger {}
 
@@ -32,7 +34,10 @@ class TempFileMerger(
                 val sortedChunks = chunks.sortedWith { a, b -> a.metadata.marker.current - b.metadata.marker.current }
                 val partInputs = sortedChunks.map { chunk -> FileInputStream(chunk.file) }
                 val sequenceInput = SequenceInputStream(Collections.enumeration(partInputs))
-                return pipeline.process(InputStreamInput(sourceFileName, sequenceInput))
+                logger.info { "pipeline started" }
+                val file = pipeline.process(InputStreamInput(sourceFileName, sequenceInput))
+                logger.info { "pipeline finished" }
+                return file
             }
         } finally {
             filesToChunks.forEach { (_, chunks) ->
@@ -51,9 +56,13 @@ class TempFileMerger(
     private fun getFileChunk(receivable: Receivable, chunkMetadata: ChunkMetadata): FileChunk {
         val tempPartFileName = "mfs-r-part-${chunkMetadata.sourceFileName}-${chunkMetadata.marker.current}-"
         val tempPartFile = Files.createTempFile(tempPartFileName, null).toFile()
-        FileOutputStream(tempPartFile).use {
-            receivable.loadAttachment(it)
-        }
+        logger.info { "receiving $chunkMetadata" }
+        val duration = Duration.ofMillis(measureTimeMillis {
+            FileOutputStream(tempPartFile).use {
+                receivable.loadAttachment(it)
+            }
+        })
+        logger.info { "received: ${duration.toString().substring(2)}" }
         return FileChunk(tempPartFile, chunkMetadata)
     }
 }

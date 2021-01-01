@@ -14,6 +14,7 @@ import com.github.al.mfs.pipeline.DefaultOutputStreamPipeline
 import com.github.al.mfs.pipeline.FileChunkCollector
 import com.github.al.mfs.pipeline.OutputCompressor
 import com.github.al.mfs.pipeline.OutputEncryptor
+import com.github.al.mfs.pipeline.OutputEncryptorHeaderWriter
 import com.github.al.mfs.pipeline.OutputPipeline
 import com.github.al.mfs.pipeline.OutputPipelineMapper
 import com.github.al.mfs.sender.DefaultSenderContextFactory
@@ -102,6 +103,13 @@ class OutputPipelineConfig {
     @Prototype
     fun collector(splitter: Splitter): Collector<List<Chunk>> {
         return FileChunkCollector(splitter)
+    }
+
+    @Order(5)
+    @Requires(property = PAYLOAD_CONTENT_ENCRYPT, value = TRUE)
+    @Singleton
+    fun encryptorHeaderWriterOutputMapper(crypto: Crypto): OutputPipelineMapper {
+        return OutputEncryptorHeaderWriter(crypto)
     }
 
     @Order(10)

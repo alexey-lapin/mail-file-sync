@@ -6,35 +6,38 @@ import mu.KotlinLogging
 import java.io.Closeable
 import java.io.InputStream
 import java.io.OutputStream
-import javax.inject.Named
 
 private val logger = KotlinLogging.logger {}
 
 interface Pipeline<R, T> : Closeable {
-    fun addMapper(mapper: (T) -> T): Pipeline<R, T>
+    val context: MutableMap<String, Any>
+    fun addMapper(mapper: Mapper<T>): Pipeline<R, T>
     fun process(input: Input): R
 }
+
+typealias Mapper<T> = (T, Pipeline<*, T>) -> T
 
 interface InputPipeline<R> : Pipeline<R, InputStream>
 
 interface OutputPipeline<R> : Pipeline<R, OutputStream>
 
-interface InputPipelineMapper : SenderFeature, ReceiverFeature, (InputStream) -> InputStream
+interface InputPipelineMapper : SenderFeature, ReceiverFeature, Mapper<InputStream>
 
-interface OutputPipelineMapper : SenderFeature, ReceiverFeature, (OutputStream) -> OutputStream
+interface OutputPipelineMapper : SenderFeature, ReceiverFeature, Mapper<OutputStream>
 
 class DefaultInputStreamPipeline<R>(
     private val collector: Collector<R>,
-    mappers: List<(InputStream) -> InputStream> = mutableListOf()
+    mappers: List<Mapper<InputStream>> = mutableListOf()
 ) : InputPipeline<R> {
 
-    private val mappers: MutableList<(InputStream) -> InputStream> = mutableListOf()
+    override val context: MutableMap<String, Any> = mutableMapOf()
+    private val mappers: MutableList<Mapper<InputStream>> = mutableListOf()
 
     init {
         this.mappers.addAll(mappers)
     }
 
-    override fun addMapper(mapper: (InputStream) -> InputStream): DefaultInputStreamPipeline<R> {
+    override fun addMapper(mapper: Mapper<InputStream>): DefaultInputStreamPipeline<R> {
         mappers.add(mapper)
         return this
     }
@@ -44,7 +47,7 @@ class DefaultInputStreamPipeline<R>(
         var currentInput = input.inputStream
         chain.add(currentInput)
         for (mapper in mappers) {
-            currentInput = mapper.invoke(currentInput)
+            currentInput = mapper.invoke(currentInput, this)
             chain.add(currentInput)
         }
         val output = collector.getSink(input)
@@ -65,16 +68,17 @@ class DefaultInputStreamPipeline<R>(
 
 class DefaultOutputStreamPipeline<R>(
     private val collector: Collector<R>,
-    mappers: List<(OutputStream) -> OutputStream> = mutableListOf()
+    mappers: List<Mapper<OutputStream>> = mutableListOf()
 ) : OutputPipeline<R> {
 
-    private val mappers: MutableList<(OutputStream) -> OutputStream> = mutableListOf()
+    override val context: MutableMap<String, Any> = mutableMapOf()
+    private val mappers: MutableList<Mapper<OutputStream>> = mutableListOf()
 
     init {
         this.mappers.addAll(mappers)
     }
 
-    override fun addMapper(mapper: (OutputStream) -> OutputStream): DefaultOutputStreamPipeline<R> {
+    override fun addMapper(mapper: Mapper<OutputStream>): DefaultOutputStreamPipeline<R> {
         mappers.add(mapper)
         return this
     }
@@ -84,7 +88,7 @@ class DefaultOutputStreamPipeline<R>(
         var currentOutput = collector.getSink(input)
         chain.add(currentOutput)
         for (mapper in mappers) {
-            currentOutput = mapper.invoke(currentOutput)
+            currentOutput = mapper.invoke(currentOutput, this)
             chain.add(currentOutput)
         }
         chain.add(input)

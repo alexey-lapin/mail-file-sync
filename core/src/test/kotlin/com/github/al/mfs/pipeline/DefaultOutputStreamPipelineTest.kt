@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.text.DecimalFormat
 import java.time.Duration
 import kotlin.system.measureTimeMillis
 
@@ -69,5 +70,20 @@ internal class DefaultOutputStreamPipelineTest {
         val o2 = ByteArrayOutputStream()
         s2.copyTo(o2)
         println()
+    }
+
+    @Test
+    internal fun name5() {
+        val format = DecimalFormat("00")
+        val crypto = DefaultCrypto("1111111111".toCharArray())
+        val splitter = FixedCountSplitter(20_000_000)
+        val collector = FileChunkCollector(splitter, { _, i -> "mfs-qqq-${format.format(i + 1)}-" }, false)
+        val pipeline = DefaultOutputStreamPipeline(collector)
+
+        pipeline.addMapper(OutputEncryptorHeaderWriter(crypto))
+        pipeline.addMapper(OutputCompressor())
+        pipeline.addMapper(OutputEncryptor(crypto))
+
+        pipeline.process(FileInput(File("")))
     }
 }

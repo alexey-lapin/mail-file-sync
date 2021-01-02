@@ -16,10 +16,22 @@ allprojects {
 
     configurations.all {
         resolutionStrategy {
+            eachDependency {
+                if (requested.group == "org.apache.httpcomponents" && requested.name == "httpclient") {
+                    useVersion("4.5.13")
+                }
+                if (requested.group == "org.apache.httpcomponents" && requested.name == "httpcore") {
+                    useVersion("4.4.14")
+                }
+                if (requested.group == "org.slf4j") {
+                    useVersion("1.7.30")
+                }
+            }
             dependencySubstitution {
                 substitute(module("commons-logging:commons-logging"))
                     .with(module("org.slf4j:jcl-over-slf4j:1.7.30"))
             }
+            exclude("org.yaml", "snakeyaml")
         }
     }
 

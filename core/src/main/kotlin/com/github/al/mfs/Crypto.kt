@@ -14,6 +14,7 @@ import com.github.al.mfs.CryptoProperties.TAG_LENGTH
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.security.spec.KeySpec
@@ -23,6 +24,7 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Singleton
+import java.security.Security
 
 object CryptoProperties {
     const val PASSPHRASE = "crypto.passphrase"
@@ -42,7 +44,6 @@ object CryptoProperties {
 }
 
 interface Crypto {
-
     fun generateSalt(): ByteArray
 
     fun generateNonce(): ByteArray
@@ -81,6 +82,10 @@ class DefaultCrypto(
     private val iterationCount: Int = DEFAULT_ITERATION_COUNT
 ) : Crypto {
 
+    init {
+        Security.addProvider(BouncyCastleProvider())
+    }
+
     private val random = SecureRandom.getInstanceStrong()
 
     override fun generateSalt(): ByteArray {
@@ -104,14 +109,14 @@ class DefaultCrypto(
     }
 
     private fun cipher(mode: Int, salt: ByteArray, nonce: ByteArray): Cipher {
-        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
+        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512", "BC")
         val spec: KeySpec = PBEKeySpec(passphrase, salt, iterationCount, keyLength)
         val tmp = factory.generateSecret(spec)
         val skey = SecretKeySpec(tmp.encoded, "AES")
 
         val ivspec = GCMParameterSpec(tagLength, nonce)
 
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC")
         cipher.init(mode, skey, ivspec)
 
         return cipher

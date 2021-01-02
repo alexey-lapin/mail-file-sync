@@ -26,7 +26,7 @@ internal class SequentialSenderOrchestrator2Test {
 
     @Test
     internal fun name2() {
-        val collector = FileChunkCollector(NoopSplitter(), false)
+        val collector = FileChunkCollector(NoopSplitter(), cleanupOnClose = false)
         val senderOrchestrator = SequentialSenderOrchestrator(
             FakeSender(),
             DefaultOutputStreamPipeline(collector),

@@ -8,6 +8,7 @@ dependencies {
     kapt("io.micronaut:micronaut-inject-java:${versions.mn}")
     implementation(kotlin("stdlib", versions.kt))
     implementation("io.micronaut:micronaut-inject:${versions.mn}")
+    implementation("org.bouncycastle:bcprov-jdk15on:1.68")
     api("io.github.microutils:kotlin-logging-jvm:2.0.4")
 
     testImplementation(kotlin("test-junit5", versions.kt))

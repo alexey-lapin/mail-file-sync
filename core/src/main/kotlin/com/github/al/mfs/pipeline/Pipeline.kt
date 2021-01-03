@@ -52,7 +52,7 @@ class DefaultInputStreamPipeline<R>(
         }
         val output = collector.getSink(input)
         chain.add(output)
-        logger.info { "pipeline: " + chain.joinToString(separator = " -> ") { it.javaClass.name } }
+        logger.info { "pipeline: " + chain.toSet().joinToString(separator = " -> ") { it.javaClass.name } }
 
         currentInput.use { usedInput ->
             output.use { usedOutput ->
@@ -92,7 +92,7 @@ class DefaultOutputStreamPipeline<R>(
             chain.add(currentOutput)
         }
         chain.add(input)
-        logger.info { "pipeline: " + chain.reversed().joinToString(separator = " -> ") { it.javaClass.name } }
+        logger.info { "pipeline: " + chain.reversed().toSet().joinToString(separator = " -> ") { it.javaClass.name } }
 
         input.inputStream.use {
             currentOutput.use { usedOutput ->

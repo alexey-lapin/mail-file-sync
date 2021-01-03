@@ -11,6 +11,8 @@ object SenderFeatures {
 }
 
 object SenderProperties {
+    const val ORCHESTRATOR_CONCURRENT = "sender.orchestrator.concurrent"
+    const val ORCHESTRATOR_CONCURRENT_THREADS = "sender.orchestrator.concurrent.threads"
     const val PAYLOAD_CONTENT_SPLIT_FIXED = "sender.payload.content.split.fixed"
     const val PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER = "sender.payload.content.split.random.lower"
     const val PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER = "sender.payload.content.split.random.upper"

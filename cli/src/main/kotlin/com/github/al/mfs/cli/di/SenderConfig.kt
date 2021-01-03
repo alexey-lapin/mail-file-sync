@@ -17,6 +17,7 @@ import com.github.al.mfs.pipeline.OutputEncryptor
 import com.github.al.mfs.pipeline.OutputEncryptorHeaderWriter
 import com.github.al.mfs.pipeline.OutputPipeline
 import com.github.al.mfs.pipeline.OutputPipelineMapper
+import com.github.al.mfs.sender.ConcurrentSenderOrchestrator
 import com.github.al.mfs.sender.DefaultSenderContextFactory
 import com.github.al.mfs.sender.EncryptSenderChunkMetadataCustomizer
 import com.github.al.mfs.sender.ObfuscateSenderPayloadNameCustomizer
@@ -31,11 +32,13 @@ import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_ENCRYPT
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_NAME_OBFUSCATE
 import com.github.al.mfs.sender.SenderOrchestrator
 import com.github.al.mfs.sender.SenderPayloadNameCustomizer
+import com.github.al.mfs.sender.SenderProperties.ORCHESTRATOR_CONCURRENT_THREADS
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_FIXED
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER
 import com.github.al.mfs.sender.SenderProperties.TRANSMISSION_ID
 import com.github.al.mfs.sender.SequentialSenderOrchestrator
+import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Prototype
@@ -43,7 +46,10 @@ import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.annotation.Order
 import io.micronaut.core.convert.format.ReadableBytes
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import javax.inject.Named
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Factory
@@ -85,8 +91,7 @@ class SenderConfig {
         )
     }
 
-    @Prototype
-    fun senderOrchestrator(
+    fun sequentialSenderOrchestrator(
         sender: Sender,
         pipeline: OutputPipeline<List<Chunk>>,
         factory: SenderContextFactory,
@@ -94,6 +99,24 @@ class SenderConfig {
     ): SenderOrchestrator {
         val featureNames = features.map { it.name }.sorted()
         return SequentialSenderOrchestrator(sender, pipeline, factory, featureNames)
+    }
+
+    @Prototype
+    fun concurrentSenderOrchestrator(
+        sender: Provider<Sender>,
+        pipeline: OutputPipeline<List<Chunk>>,
+        factory: SenderContextFactory,
+        features: List<SenderFeature>,
+        pool: ExecutorService
+    ): SenderOrchestrator {
+        val featureNames = features.map { it.name }.sorted()
+        return ConcurrentSenderOrchestrator(sender, pipeline, factory, featureNames, pool)
+    }
+
+    @Named("sendPool")
+    @Bean(preDestroy = "shutdown")
+    fun executorService(@Property(name = ORCHESTRATOR_CONCURRENT_THREADS) threads: Int): ExecutorService {
+        return Executors.newFixedThreadPool(threads)
     }
 }
 

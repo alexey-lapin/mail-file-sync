@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.groups.cooccurring
 import com.github.ajalt.clikt.parameters.groups.groupChoice
 import com.github.ajalt.clikt.parameters.groups.required
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
@@ -13,6 +14,7 @@ import com.github.ajalt.clikt.parameters.types.file
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_COMPRESS
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_NAME_OBFUSCATE
 import com.github.al.mfs.sender.SenderOrchestrator
+import com.github.al.mfs.sender.SenderProperties.ORCHESTRATOR_CONCURRENT_THREADS
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_FIXED
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_LOWER
 import com.github.al.mfs.sender.SenderProperties.PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER
@@ -36,6 +38,8 @@ class SendCommand : CliktCommand() {
     private val contentSplitTo by option("--content-split-to", valueSourceKey = PAYLOAD_CONTENT_SPLIT_RANDOM_UPPER)
     private val contentCompress by option("--content-compress", valueSourceKey = PAYLOAD_CONTENT_COMPRESS).flag()
     private val nameObfuscate by option("--name-obfuscate", valueSourceKey = PAYLOAD_NAME_OBFUSCATE).flag()
+
+    private val orchestratorConcurrentThreads by option("--concurrent", valueSourceKey = ORCHESTRATOR_CONCURRENT_THREADS).default("1")
 
     private val files by argument("files").file(mustExist = true, canBeDir = false).multiple(true)
 

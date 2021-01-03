@@ -56,13 +56,15 @@ class TempFileMerger(
     private fun getFileChunk(receivable: Receivable, chunkMetadata: ChunkMetadata): FileChunk {
         val tempPartFileName = "mfs-r-part-${chunkMetadata.sourceFileName}-${chunkMetadata.marker.current}-"
         val tempPartFile = Files.createTempFile(tempPartFileName, null).toFile()
-        logger.info { "receiving $chunkMetadata" }
-        val duration = Duration.ofMillis(measureTimeMillis {
-            FileOutputStream(tempPartFile).use {
-                receivable.loadAttachment(it)
+        logger.info { "${chunkMetadata.marker} receive started" }
+        val duration = Duration.ofMillis(
+            measureTimeMillis {
+                FileOutputStream(tempPartFile).use {
+                    receivable.loadAttachment(it)
+                }
             }
-        })
-        logger.info { "received: ${duration.toString().substring(2)}" }
+        )
+        logger.info { "${chunkMetadata.marker} receive finished: ${duration.toString().substring(2)}" }
         return FileChunk(tempPartFile, chunkMetadata)
     }
 }

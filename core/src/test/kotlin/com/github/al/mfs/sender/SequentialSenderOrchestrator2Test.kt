@@ -1,7 +1,6 @@
 package com.github.al.mfs.sender
 
 import com.github.al.mfs.io.NoopSplitter
-import com.github.al.mfs.pipeline.ByteArrayChunkCollector
 import com.github.al.mfs.pipeline.Chunk
 import com.github.al.mfs.pipeline.DefaultOutputStreamPipeline
 import com.github.al.mfs.pipeline.FileChunkCollector
@@ -15,13 +14,13 @@ internal class SequentialSenderOrchestrator2Test {
 
     @Test
     internal fun name() {
-        val senderOrchestrator2 = SequentialSenderOrchestrator(
-            FakeSender(),
-            DefaultOutputStreamPipeline(ByteArrayChunkCollector(NoopSplitter())),
-            MockSenderContextFactory(),
-            listOf()
-        )
-        senderOrchestrator2.send(File("build.gradle.kts"))
+//        val senderOrchestrator2 = SequentialSenderOrchestrator(
+//            FakeSender(),
+//            DefaultOutputStreamPipeline(ByteArrayChunkCollector(NoopSplitter())),
+//            MockSenderContextFactory(),
+//            listOf()
+//        )
+//        senderOrchestrator2.send(File("build.gradle.kts"))
     }
 
     @Test

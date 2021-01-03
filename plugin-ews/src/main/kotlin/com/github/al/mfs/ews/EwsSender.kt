@@ -21,8 +21,8 @@ class EwsSender(private val exchange: ExchangeService) : Sender {
         recipients.forEach {
             message.toRecipients.add(it)
         }
-        logger.info { "sending ${context.metadata}" }
+        logger.info { "${context.metadata.marker} send started" }
         val duration = Duration.ofMillis(measureTimeMillis { message.send() })
-        logger.info { "sent: ${duration.toString().substring(2)}" }
+        logger.info { "${context.metadata.marker} send finished: ${duration.toString().substring(2)}" }
     }
 }

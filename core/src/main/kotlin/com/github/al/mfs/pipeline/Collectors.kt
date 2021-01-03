@@ -22,9 +22,7 @@ private val logger = KotlinLogging.logger {}
 
 class NoopCollector : Collector<List<Chunk>> {
     override fun getSink(input: Input): OutputStream {
-        return object : OutputStream() {
-            override fun write(b: Int) {}
-        }
+        return NoopOutputStream
     }
 
     override fun collect(input: Input, output: OutputStream): List<Chunk> {
@@ -36,6 +34,7 @@ class NoopCollector : Collector<List<Chunk>> {
 
 class FileChunkCollector(
     private val splitter: Splitter,
+    private val namer: (String, Int) -> String = { name, index -> "mfs-s-part-$name-${index + 1}-" },
     private val cleanupOnClose: Boolean = true
 ) : Collector<List<Chunk>> {
 
@@ -43,7 +42,7 @@ class FileChunkCollector(
 
     override fun getSink(input: Input): OutputStream {
         return SplittingOutputStream(splitter) { i ->
-            val tmpPartFile = Files.createTempFile("mfs-s-part-${input.name}-${i + 1}-", null).toFile()
+            val tmpPartFile = Files.createTempFile(namer.invoke(input.name, i), null).toFile()
             val tmpPartFileOutputStream = FileOutputStream(tmpPartFile)
             sourceParts.add(tmpPartFile to tmpPartFileOutputStream)
             tmpPartFileOutputStream
@@ -72,7 +71,7 @@ class FileChunkCollector(
     }
 }
 
-class ByteArrayChunkCollector(private val splitter: Splitter) : Collector<List<Chunk>> {
+class ByteArrayChunkCollector(private val splitter: Splitter) : Collector<() -> List<Chunk>> {
 
     private val sourceParts = mutableListOf<ByteArrayOutputStream>()
 
@@ -84,16 +83,17 @@ class ByteArrayChunkCollector(private val splitter: Splitter) : Collector<List<C
         }
     }
 
-    override fun collect(input: Input, output: OutputStream): List<Chunk> {
+    override fun collect(input: Input, output: OutputStream): () -> List<Chunk> {
         input.inputStream.copyTo(output)
-        return sourceParts.mapIndexed { i, sourcePart ->
-            val metadata = ChunkMetadata(input.name, PartMarker(i + 1, sourceParts.size))
-            BytesChunk(sourcePart.toByteArray(), metadata)
+        return {
+            sourceParts.mapIndexed { i, sourcePart ->
+                val metadata = ChunkMetadata(input.name, PartMarker(i + 1, sourceParts.size))
+                BytesChunk(sourcePart.toByteArray(), metadata)
+            }
         }
     }
 
     override fun close() {
-        sourceParts.clear()
     }
 }
 

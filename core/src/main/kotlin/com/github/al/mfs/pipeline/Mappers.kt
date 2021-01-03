@@ -3,14 +3,13 @@ package com.github.al.mfs.pipeline
 import com.github.al.mfs.Crypto
 import com.github.al.mfs.CryptoProperties.NONCE
 import com.github.al.mfs.CryptoProperties.SALT
-import com.github.al.mfs.io.DelegateInputStream
-import com.github.al.mfs.io.DelegateOutputStream
 import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECOMPRESS
 import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECRYPT
 import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECRYPT_HEADER
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_COMPRESS
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_ENCRYPT
 import com.github.al.mfs.sender.SenderFeatures.PAYLOAD_CONTENT_ENCRYPT_HEADER
+import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.zip.Deflater
@@ -36,7 +35,7 @@ class OutputEncryptorHeaderWriter(private val crypto: Crypto) : OutputPipelineMa
         pipeline.context[NONCE] = nonce
         stream.write(salt)
         stream.write(nonce)
-        return DelegateOutputStream(stream) {}
+        return stream
     }
 }
 
@@ -46,6 +45,13 @@ class OutputEncryptor(private val crypto: Crypto) : OutputPipelineMapper {
         val salt = pipeline.context[SALT] as ByteArray
         val nonce = pipeline.context[NONCE] as ByteArray
         return CipherOutputStream(stream, crypto.encryptionCipher(salt, nonce))
+    }
+}
+
+class InputBuffer : InputPipelineMapper {
+    override val name = "buffered"
+    override fun invoke(stream: InputStream, pipeline: Pipeline<*, InputStream>): InputStream {
+        return BufferedInputStream(stream)
     }
 }
 
@@ -74,6 +80,6 @@ class InputDecryptorHeaderReader(private val crypto: Crypto) : InputPipelineMapp
         stream.read(nonce)
         pipeline.context[SALT] = salt
         pipeline.context[NONCE] = nonce
-        return DelegateInputStream(stream) {}
+        return stream
     }
 }

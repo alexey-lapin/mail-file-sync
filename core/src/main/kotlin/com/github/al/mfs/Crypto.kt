@@ -17,6 +17,7 @@ import io.micronaut.context.annotation.Requires
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.nio.ByteBuffer
 import java.security.SecureRandom
+import java.security.Security
 import java.security.spec.KeySpec
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
@@ -24,7 +25,6 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Singleton
-import java.security.Security
 
 object CryptoProperties {
     const val PASSPHRASE = "crypto.passphrase"

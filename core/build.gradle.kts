@@ -15,6 +15,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${versions.junit}")
     testImplementation("org.assertj:assertj-core:3.18.1")
 
-    testRuntimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    testRuntimeOnly("ch.qos.logback:logback-classic:${versions.logback}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${versions.junit}")
 }

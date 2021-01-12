@@ -23,7 +23,7 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:3.1.0")
     implementation("io.micronaut:micronaut-inject:${versions.mn}")
 
-    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    runtimeOnly("ch.qos.logback:logback-classic:${versions.logback}")
 }
 
 tasks.withType<KotlinCompile>().configureEach {

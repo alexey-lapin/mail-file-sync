@@ -11,6 +11,7 @@ class Versions(private val project: Project) {
     val kt by properties
     val mn by properties
     val jakartaMail by properties
+    val logback by properties
     val junit by properties
     val ktlint by properties
 

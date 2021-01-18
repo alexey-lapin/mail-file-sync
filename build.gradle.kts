@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") apply false
-    id("com.diffplug.spotless")
     id("com.github.ben-manes.versions")
+    id("com.diffplug.spotless")
 }
 
 group = "com.github.al.mfs"
@@ -24,12 +24,12 @@ allprojects {
                     useVersion("4.4.14")
                 }
                 if (requested.group == "org.slf4j") {
-                    useVersion("1.7.30")
+                    useVersion(versions.slf4j)
                 }
             }
             dependencySubstitution {
                 substitute(module("commons-logging:commons-logging"))
-                    .with(module("org.slf4j:jcl-over-slf4j:1.7.30"))
+                    .with(module("org.slf4j:jcl-over-slf4j:${versions.slf4j}"))
             }
             exclude("org.yaml", "snakeyaml")
         }

@@ -1,6 +1,7 @@
 package com.github.al.mfs.smtp
 
 import com.github.al.mfs.sender.Sender
+import com.github.al.mfs.sender.SenderProperties.RECIPIENTS
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_HOST
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_PASS
 import com.github.al.mfs.smtp.SmtpProperties.SMTP_PORT
@@ -60,7 +61,7 @@ class SmtpConfig {
 
     @Requires(beans = [Session::class])
     fun smtpSender(
-        @Property(name = "sender.recipients") recipients: List<String>,
+        @Property(name = RECIPIENTS) recipients: List<String>,
         session: Session
     ): Sender {
         return SmtpSender(session, recipients)

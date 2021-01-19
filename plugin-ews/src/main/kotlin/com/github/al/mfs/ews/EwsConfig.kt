@@ -3,6 +3,7 @@ package com.github.al.mfs.ews
 import com.github.al.mfs.ews.EwsProperties.EWS_PASS
 import com.github.al.mfs.ews.EwsProperties.EWS_URL
 import com.github.al.mfs.ews.EwsProperties.EWS_USER
+import com.github.al.mfs.sender.SenderProperties.RECIPIENTS
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Prototype
@@ -43,7 +44,7 @@ class EwsConfig {
     @Prototype
     fun ewsSender(
         exchange: ExchangeService,
-        @Property(name = "sender.recipients") recipients: List<String>
+        @Property(name = RECIPIENTS) recipients: List<String>
     ): EwsSender {
         val sender = EwsSender(exchange)
         sender.recipients = recipients

@@ -9,6 +9,10 @@ object ReceiverFeatures {
     const val PAYLOAD_CONTENT_DECRYPT_HEADER = "receiver.payload.content.decrypt.header"
 }
 
+object ReceiverProperties {
+    const val TRANSPORT = "receiver.transport"
+}
+
 interface Receiver {
     fun <R> receive(context: ReceiverContext<R>): R
 }

@@ -9,11 +9,12 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.al.mfs.receiver.ReceiverFeatures.PAYLOAD_CONTENT_DECOMPRESS
 import com.github.al.mfs.receiver.ReceiverOrchestrator
+import com.github.al.mfs.receiver.ReceiverProperties.TRANSPORT
 import io.micronaut.context.ApplicationContext
 
 class ReceiveCommand() : CliktCommand() {
 
-    private val transportOptions by option("--transport").groupChoice(
+    private val transportOptions by option("--transport", valueSourceKey = TRANSPORT).groupChoice(
         "ews" to EwsOptions(),
         // imap
     ).required()

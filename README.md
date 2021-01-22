@@ -11,8 +11,8 @@ sync files in emails with encryption
 - encryption of subject and body 
 
 ### Usage
-on sender side
+on sender side  
 `java -jar mfs.jar send --transport ews --ews-url https://owa.example.com/EWS/Exchange.asmx --ews-user john --ews-pass pass file.txt`
 
-on receiver side
+on receiver side  
 `java -jar mfs.jar receive --transport ews --ews-url https://owa.example.com/EWS/Exchange.asmx --ews-user john --ews-pass pass Wf9nj`

@@ -48,6 +48,7 @@ class ConcurrentSenderOrchestrator(
 
     override fun send(file: File) {
         logger.info { "sending ${file.absolutePath} ${Files.size(file.toPath())}" }
+        logger.info { "transmission id: ${senderContextFactory.transmissionId}" }
         logger.info { "applied features: $features" }
         pipeline.let { usedPipeline ->
             logger.info { "pipeline started" }
@@ -58,6 +59,7 @@ class ConcurrentSenderOrchestrator(
                 .map { r -> CompletableFuture.runAsync(r, pool) }
                 .toTypedArray()
             CompletableFuture.allOf(*futures).join()
+            pool.shutdown()
         }
     }
 }

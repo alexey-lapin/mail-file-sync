@@ -42,6 +42,7 @@ internal class SequentialSenderOrchestrator2Test {
 }
 
 class MockSenderContextFactory : SenderContextFactory {
+    override val transmissionId = "mock"
     override fun create(chunk: Chunk): SenderContext {
         return SimpleSenderContext(chunk.metadata, "", "", ByteArrayInputStream(byteArrayOf()))
     }

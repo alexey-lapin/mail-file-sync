@@ -3,11 +3,12 @@ package com.github.al.mfs.sender
 import com.github.al.mfs.pipeline.Chunk
 
 interface SenderContextFactory {
+    val transmissionId: String
     fun create(chunk: Chunk): SenderContext
 }
 
 class DefaultSenderContextFactory(
-    private val transmissionId: String,
+    override val transmissionId: String,
     private val transmissionMetadataCustomizer: SenderChunkMetadataCustomizer,
     private val senderPayloadNameCustomizer: SenderPayloadNameCustomizer
 ) : SenderContextFactory {
